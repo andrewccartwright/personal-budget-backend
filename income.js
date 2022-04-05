@@ -25,9 +25,9 @@ const getIncomeById = (req, res, next) => {
 }
 
 const addIncome = (req, res, next) => {
-    const { name, amount } = req.body;
+    const { name, planned, actual } = req.body;
 
-    db.query('INSERT INTO income (name, amount) VALUES ($1, $2) RETURNING *', [name, amount], (err, data) => {
+    db.query('INSERT INTO income (name, amount) VALUES ($1, $2) RETURNING *', [name, planned, actual], (err, data) => {
         if(err) {
             throw err;
         }
@@ -38,9 +38,9 @@ const addIncome = (req, res, next) => {
 
 const updateIncome = (req, res, next) => {
     const id = parseInt(req.params.id);
-    const { name, amount } = req.body;
+    const { name, planned, actual } = req.body;
 
-    db.query('UPDATE income SET name = $1, amount = $2 WHERE id=$3', [name, amount, id], (err, data) => {
+    db.query('UPDATE income SET name = $1, amount = $2 WHERE id=$3', [name, planned, actual, id], (err, data) => {
         if(err) {
             throw err;
         }
