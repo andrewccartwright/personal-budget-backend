@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/andrewchatch/personal-budget-backend/issues"
   },
-  "homepage": "https://github.com/andrewchatch/personal-budget-backend#readme"
+  "homepage": "https://github.com/andrewchatch/personal-budget-backend#readme",
+  "dependencies": {
+    "express": "^4.17.3"
+  }
 }
