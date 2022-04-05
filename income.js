@@ -3,7 +3,7 @@ const incomeRouter = express.Router();
 const db = require('./db');
 
 const getIncome = (req, res, next) => {
-    db.query('SELECT * FROM income ORDER BY id ASC', (err, data) => {
+    db.query('SELECT * FROM income ORDER BY name ASC', (err, data) => {
         if(err) {
             throw err;
         }

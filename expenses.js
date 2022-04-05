@@ -3,7 +3,7 @@ const expenseRouter = express.Router();
 const db = require('./db');
 
 const getExpenses = (req, res, next) => {
-    db.query('SELECT * FROM expenses ORDER BY id ASC', (err, data) => {
+    db.query('SELECT * FROM expenses ORDER BY name ASC', (err, data) => {
         if(err) {
             throw err;
         }

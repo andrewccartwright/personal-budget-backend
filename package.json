@@ -1,6 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
+  "homepage": "https://andrewchatch.github.io/personal-budget",
   "description": "",
   "main": "db.js",
   "scripts": {
