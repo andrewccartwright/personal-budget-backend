@@ -27,7 +27,7 @@ const getExpenseById = (req, res, next) => {
 const addExpense = (req, res, next) => {
     const { name, planned, actual } = req.body;
 
-    db.query('INSERT INTO expenses (name, amount) VALUES ($1, $2) RETURNING *', [name, planned, actual], (err, data) => {
+    db.query('INSERT INTO expenses (name, planned, actual) VALUES ($1, $2, $3) RETURNING *', [name, planned, actual], (err, data) => {
         if(err) {
             throw err;
         }
@@ -40,7 +40,7 @@ const updateExpense = (req, res, next) => {
     const id = parseInt(req.params.id);
     const { name, planned, actual } = req.body;
 
-    db.query('UPDATE expenses SET name = $1, amount = $2 WHERE id=$3', [name, planned, actual, id], (err, data) => {
+    db.query('UPDATE expenses SET name = $1, planned = $2, actual = $3 WHERE id=$4', [name, planned, actual, id], (err, data) => {
         if(err) {
             throw err;
         }
