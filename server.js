@@ -13,6 +13,17 @@ require('dotenv').config();
 
 app.use(session({ secret: this.process.GOOGLE_CLIENT_SECRET }));
 
+app.use(bodyParser.json());
+app.use(cors({
+    origin: '*'
+}));
+
+app.use('/expenses', expenseRouter);
+
+app.use('/income', incomeRouter);
+
+app.use('/', express.static('public'));
+
 const oAuth2Client = new OAuth2Client();
 
 var userProfile;
@@ -59,18 +70,10 @@ app.get('/auth/google/callback',
   });
 
 
-app.use(bodyParser.json());
-app.use(cors({
-    origin: '*'
-}));
 
 const PORT = process.env.PORT || 8000;
 
-app.use('/expenses', expenseRouter);
 
-app.use('/income', incomeRouter);
-
-app.use('/', express.static('public'));
 
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
