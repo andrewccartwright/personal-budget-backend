@@ -1,68 +1,62 @@
 const express = require('express');
+const metadata = require('gcp-metadata');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const expenseRouter = require('./expenses');
 const incomeRouter = require('./income');
-const fs = require('fs');
-const readline = require('readline');
-const {google} = require('googleapis');
+const {OAuth2Client} = require('google-auth-library');
+const passport = require('passport');
+const session = require('express-session');
+// After you declare "app"
 const app = express();
+require('dotenv').config();
 
-const SCOPES = ['https://www.googleapis.com/auth/contacts.readonly'];
+app.use(session({ secret: this.process.GOOGLE_CLIENT_SECRET }));
 
-const TOKEN_PATH = 'token.json';
+const oAuth2Client = new OAuth2Client();
 
-fs.readFile('credentials.json', (err, content) => {
-    if (err) {
-        return console.log('Error loading client secret file:', err);
-    }
+var userProfile;
 
-    authorize(JSON.parse(content));
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.set('view engine', 'ejs');
+
+app.get('/success', (req, res) => res.send(userProfile));
+app.get('/error', (req, res) => res.send("error logging in"));
+
+passport.serializeUser(function(user, cb) {
+  cb(null, user);
 });
 
-const authorize = (credentials, callback) => {
-    const {client_secret, client_id, redirect_uris} = credentials.web;
-    const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+passport.deserializeUser(function(obj, cb) {
+  cb(null, obj);
+});
 
-    fs.readFile(TOKEN_PATH, (err, token) => {
-        if(err) {
-            return getNewToken(oAuth2Client, callback);
-        }
-        oAuth2Client.setCredentials(JSON.parse(token));
-        callback(oAuth2Client)
-    });
-}
-
-const getNewToken = (oAuth2Client, callback) => {
-    const authUrl = oAuth2Client.generateAuthUrl({
-        access_type: 'offline',
-        scope: SCOPES,
-    });
-    console.log('Authorize this app by visiting this URL:', authUrl);
-
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-    });
-
-    rl.question('Enter the code from that page here: ', (code) => {
-        rl.close();
-        oAuth2Client.getToken(code, (err, token) => {
-            if (err) {
-                return console.error('Error retrieving access token:', err);
-            }
-
-            oAuth2Client.setCredentials(token);
-
-            fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
-                if(err) return console.error(err);
-                console.log('Token stored to ', TOKEN_PATH);
-            });
-
-            callback(oAuth2Client);
-        });
-    });
-}
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+passport.use(new GoogleStrategy({
+    clientID: GOOGLE_CLIENT_ID,
+    clientSecret: GOOGLE_CLIENT_SECRET,
+    callbackURL: "https://andrewchatch.github.io/personal-budget"
+  },
+  function(accessToken, refreshToken, profile, done) {
+      userProfile=profile;
+      console.log(userProfile);
+      return done(null, userProfile);
+  }
+));
+ 
+app.get('/auth/google', 
+  passport.authenticate('google', { scope : ['profile', 'email'] }));
+ 
+app.get('/auth/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/error' }),
+  function(req, res) {
+    // Successful authentication, redirect success.
+    res.redirect('/success');
+  });
 
 
 app.use(bodyParser.json());
@@ -76,9 +70,7 @@ app.use('/expenses', expenseRouter);
 
 app.use('/income', incomeRouter);
 
-app.get('/', (req, res) => {
-    res.json({"message": "Connection successful"});
-});
+app.use('/', express.static('public'));
 
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
