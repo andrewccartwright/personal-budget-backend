@@ -11,12 +11,12 @@ const session = require('express-session');
 const app = express();
 require('dotenv').config();
 
-app.use(session({ secret: this.process.GOOGLE_CLIENT_SECRET }));
-
 app.use(bodyParser.json());
 app.use(cors({
     origin: '*'
 }));
+
+app.use(session({ secret: this.process.GOOGLE_CLIENT_SECRET }));
 
 app.use('/expenses', expenseRouter);
 
