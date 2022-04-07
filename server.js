@@ -16,7 +16,7 @@ app.use(cors({
     origin: '*'
 }));
 
-app.use(session({ secret: this.process.GOOGLE_CLIENT_SECRET }));
+app.use(session({ secret: process.env.GOOGLE_CLIENT_SECRET }));
 
 app.use('/expenses', expenseRouter);
 
