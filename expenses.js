@@ -9,13 +9,8 @@ const getExpenses = (req, res, next) => {
             throw err;
         }
 
-        if(data.rows.length > 0) 
-        {
-            res.status(200).json(data.rows);
-        }
-        else {
-            res.status(200).send('There are no matching items in the database');
-        }
+        res.status(200).send('There are no matching items in the database');
+
     });
 }
 
@@ -28,13 +23,8 @@ const getExpenseById = (req, res, next) => {
             throw err;
         }
 
-        if(data.rows.length > 0) 
-        {
-            res.status(200).json(data.rows);
-        }
-        else {
-            res.status(200).send('There are no matching items in the database');
-        }
+        res.status(200).send('There are no matching items in the database');
+
     });
 }
 
