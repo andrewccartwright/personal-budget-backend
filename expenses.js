@@ -9,7 +9,13 @@ const getExpenses = (req, res, next) => {
             throw err;
         }
 
-        res.status(200).json(data.rows);
+        if(data.rows.length > 0) 
+        {
+            res.status(200).json(data.rows);
+        }
+        else {
+            res.status(200).send('There are no matching items in the database');
+        }
     });
 }
 
@@ -22,14 +28,20 @@ const getExpenseById = (req, res, next) => {
             throw err;
         }
 
-        res.status(200).json(data.rows);
+        if(data.rows.length > 0) 
+        {
+            res.status(200).json(data.rows);
+        }
+        else {
+            res.status(200).send('There are no matching items in the database');
+        }
     });
 }
 
 const addExpense = (req, res, next) => {
-    const { name, planned, actual, user_email } = req.body;
+    const { name, planned, actual, email } = req.body;
 
-    db.query('INSERT INTO expenses (name, planned, actual, user_email) VALUES ($1, $2, $3, $4) RETURNING *', [name, planned, actual, user_email], (err, data) => {
+    db.query('INSERT INTO expenses (name, planned, actual, user_email) VALUES ($1, $2, $3, $4) RETURNING *', [name, planned, actual, email], (err, data) => {
         if(err) {
             throw err;
         }
