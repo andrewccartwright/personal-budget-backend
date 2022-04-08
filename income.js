@@ -32,7 +32,7 @@ const getIncomeById = (req, res, next) => {
 const addIncome = (req, res, next) => {
     const { name, planned, actual, email } = req.body;
 
-    db.query('INSERT INTO income (name, planned, actual) VALUES ($1, $2, $3, $4) RETURNING *', [name, planned, actual, email], (err, data) => {
+    db.query('INSERT INTO income (name, planned, actual, email) VALUES ($1, $2, $3, $4) RETURNING *', [name, planned, actual, email], (err, data) => {
         if(err) {
             throw err;
         }
