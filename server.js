@@ -13,7 +13,8 @@ require('dotenv').config();
 
 app.use(bodyParser.json());
 app.use(cors({
-    origin: '*'
+    origin: '*',
+    credentials: true
 }));
 
 app.use(session({ secret: 'i like to eat pizza' }));
@@ -47,9 +48,12 @@ passport.deserializeUser(function(obj, cb) {
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+
+console.log(GOOGLE_CLIENT_ID);
+
 passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    clientID: GOOGLE_CLIENT_ID,
+    clientSecret: GOOGLE_CLIENT_SECRET,
     callbackURL: "https://andrewchatch.github.io/personal-budget"
   },
   function(accessToken, refreshToken, profile, done) {
