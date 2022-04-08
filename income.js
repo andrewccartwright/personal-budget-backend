@@ -3,7 +3,9 @@ const incomeRouter = express.Router();
 const db = require('./db');
 
 const getIncome = (req, res, next) => {
-    db.query('SELECT * FROM income ORDER BY name ASC', (err, data) => {
+    const { email } = req.body;
+
+    db.query('SELECT * FROM income WHERE user_email = $1 ORDER BY name ASC', [email], (err, data) => {
         if(err) {
             throw err;
         }
@@ -14,8 +16,9 @@ const getIncome = (req, res, next) => {
 
 const getIncomeById = (req, res, next) => {
     const id = parseInt(req.params.id);
+    const { email } = req.body;
 
-    db.query('SELECT * FROM income WHERE id=$1', [id], (err, data) => {
+    db.query('SELECT * FROM income WHERE id=$1 AND user_email = $2', [id, email], (err, data) => {
         if(err) {
             throw err;
         }
@@ -25,9 +28,9 @@ const getIncomeById = (req, res, next) => {
 }
 
 const addIncome = (req, res, next) => {
-    const { name, planned, actual } = req.body;
+    const { name, planned, actual, user_email } = req.body;
 
-    db.query('INSERT INTO income (name, planned, actual) VALUES ($1, $2, $3) RETURNING *', [name, planned, actual], (err, data) => {
+    db.query('INSERT INTO income (name, planned, actual) VALUES ($1, $2, $3, $4) RETURNING *', [name, planned, actual, user_email], (err, data) => {
         if(err) {
             throw err;
         }
@@ -51,8 +54,9 @@ const updateIncome = (req, res, next) => {
 
 const deleteIncome = (req, res, next) => {
     const id = parseInt(req.params.id);
+    const { email } = req.body;
 
-    db.query('DELETE FROM income WHERE id = $1', [id], (err, data) => {
+    db.query('DELETE FROM income WHERE id = $1 AND user_email = $2', [id, email], (err, data) => {
         if(err) {
             throw err;
         }
