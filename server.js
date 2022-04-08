@@ -13,7 +13,7 @@ require('dotenv').config();
 
 app.use(bodyParser.json());
 app.use(cors({
-    origin: 'https://andrewchatch.github.io/personal-portfolio',
+    origin: 'https://andrewchatch.github.io',
     credentials: true
 }));
 
