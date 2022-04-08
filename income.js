@@ -10,7 +10,7 @@ const getIncome = (req, res, next) => {
             throw err;
         }
 
-        res.status(200).send('There are no matching items in the database');
+        res.status(200).json(data.rows);
 
     });
 }
@@ -24,7 +24,7 @@ const getIncomeById = (req, res, next) => {
             throw err;
         }
 
-        res.status(200).send('There are no matching items in the database');
+        res.status(200).json(data.rows);
 
     });
 }
