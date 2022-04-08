@@ -3,7 +3,7 @@ const incomeRouter = express.Router();
 const db = require('./db');
 
 const getIncome = (req, res, next) => {
-    const { email } = req.body;
+    const email= req.body.email || req.query.email;
 
     db.query('SELECT * FROM income WHERE email = $1 ORDER BY name ASC', [email], (err, data) => {
         if(err) {
@@ -17,7 +17,7 @@ const getIncome = (req, res, next) => {
 
 const getIncomeById = (req, res, next) => {
     const id = parseInt(req.params.id);
-    const { email } = req.body;
+    const email = req.body.email || req.query.email;
 
     db.query('SELECT * FROM income WHERE id=$1 AND email = $2', [id, email], (err, data) => {
         if(err) {

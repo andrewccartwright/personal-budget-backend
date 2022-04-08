@@ -3,7 +3,10 @@ const expenseRouter = express.Router();
 const db = require('./db');
 
 const getExpenses = (req, res, next) => {
-    const { email } = req.body || req.params;
+    const email = req.body.email || req.query.email;
+
+    
+
     db.query('SELECT * FROM expenses WHERE email = $1 ORDER BY name ASC', [email], (err, data) => {
         if(err) {
             throw err;
@@ -15,9 +18,9 @@ const getExpenses = (req, res, next) => {
 
 const getExpenseById = (req, res, next) => {
     const id = parseInt(req.params.id);
-    const { email } = req.body || req.params;
+    const email = req.body.email || req.query.email;
 
-    db.query('SELECT * FROM expenses WHERE id=$1 AND user_email = $2', [id, email], (err, data) => {
+    db.query('SELECT * FROM expenses WHERE id=$1 AND email = $2', [id, email], (err, data) => {
         if(err) {
             throw err;
         }
